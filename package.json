@@ -1,0 +1,25 @@
+{
+  "name": "anki-made-easy",
+  "version": "1.0.0",
+  "description": "Input German words to create anki cards",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/uGboly/anki-made-easy.git"
+  },
+  "keywords": [
+    "Anki"
+  ],
+  "author": "uGboly",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/uGboly/anki-made-easy/issues"
+  },
+  "homepage": "https://github.com/uGboly/anki-made-easy#readme",
+  "dependencies": {
+    "@azure/openai": "^1.0.0-beta.12"
+  }
+}
