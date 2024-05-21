@@ -7,19 +7,23 @@ const path = require('path')
 const client = new OpenAIClient(endpoint, new AzureKeyCredential(azureApiKey))
 
 async function generateResponse (word, prompt, separator) {
-  try {
-    const { choices } = await client.getChatCompletions(deploymentID, [
-      { role: 'user', content: prompt(word) }
-    ])
+  let flag = true
+  while (flag) {
+    try {
+      const { choices } = await client.getChatCompletions(deploymentID, [
+        { role: 'user', content: prompt(word) }
+      ])
 
-    let response = choices[0].message.content
-    const firstIndex = response.indexOf(separator[0])
-    const lastIndex = response.lastIndexOf(separator[1])
-    response = response.substring(firstIndex, lastIndex + 1)
+      let response = choices[0].message.content
+      const firstIndex = response.indexOf(separator[0])
+      const lastIndex = response.lastIndexOf(separator[1])
+      response = response.substring(firstIndex, lastIndex + 1)
 
-    return JSON.parse(response)
-  } catch (error) {
-    return JSON.parse(separator.join(''))
+      response = JSON.parse(response)
+      return response
+    } catch (error) {
+      continue
+    }
   }
 }
 
