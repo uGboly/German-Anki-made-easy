@@ -39,7 +39,7 @@ function formatResponse (dict, irregular) {
 
   return `${word};${meaning};${example_sentence};${translation};${
     irregular.length > 0 ? '<' + irregular.join(', ') + '>' : ''
-  }`
+  };`
 }
 
 async function processWords (words) {
