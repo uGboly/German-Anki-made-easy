@@ -1,5 +1,5 @@
 const { OpenAIClient, AzureKeyCredential } = require('@azure/openai')
-const { azureApiKey, endpoint, deploymentID } = require('./key')
+const { azureApiKey, endpoint, deploymentID, dirToSave } = require('./config')
 const { meaningLookUp, irregularLookUp } = require('./prompt')
 const fs = require('fs')
 const path = require('path')
@@ -49,7 +49,7 @@ async function processWords (words) {
     let content = '#html:false\n#separator:;\n'
     content += responses.join('\n')
 
-    const filePath = path.join('/Users/loserzhang/downloads', 'out.txt')
+    const filePath = path.join( dirToSave, 'out.txt')
     fs.writeFileSync(filePath, content)
     console.log('Responses written to', filePath, 'successfully.')
   } catch (error) {
