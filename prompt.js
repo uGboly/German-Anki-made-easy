@@ -70,7 +70,18 @@ function irregularLookUp (word) {
     Now, generate the JSON array for the word: ${word}.
   `
 }
+
+function converter (german, english) {
+  return `I will give you a fragment of a German vocabulary book, which is divided into two halves: the German part and the English part. The German part includes German words and German example sentences. For nouns, it places the corresponding definite article before the word. The English part includes the English translation of the German word and the English translation of the German example sentence. Your task is to match each German word and its example sentences with their English translations. Output a JSON array, where each item is an array of strings. The first item is the German word (if it is a noun, include the definite article before the word), the second item is the German example sentence (if there are multiple, separate them with a space; if there are none, use an empty string), the third item is the English translation of the word, and the fourth item is the English translation of the example sentence (if there are multiple, separate them with a white space; if there are none, use an empty string).No extra output.
+The German part is as follows:
+${german}
+The English part is as follows:
+${english}
+
+  `
+}
 module.exports = {
   meaningLookUp,
-  irregularLookUp
+  irregularLookUp,
+  converter
 }
