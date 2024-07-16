@@ -34,7 +34,7 @@ async function matchContent (german, english) {
     ']'
   ])
 
-  return response.map(formatLine).join('\n')
+  return response.map(formatLine).join('\n').replace(/,\|/g, '.|')
 }
 
 function formatLine (line) {
@@ -48,7 +48,7 @@ async function processWords (german, english) {
   try {
     const responses = await matchContent(german, english)
     let content = '#html:false\n#separator:|\n'
-    content += responses
+    content = content + responses + '\n' + extractContent(german, 1).join('\n') + '\n' + extractContent(english, 0).join('\n')
 
     const filePath = path.join(dirToSave, 'words.txt')
     fs.writeFileSync(filePath, content)
@@ -58,4 +58,27 @@ async function processWords (german, english) {
   }
 }
 
-processWords(german.replace(/\[.*?\]/g, ''), english)
+function extractContent(str, mode) {
+  const results = []
+  const front = ['(', '<']
+  const back = [')', '>']
+  let regex
+
+  if (mode === 0) {
+      regex = /\(([^)]+)\)/g  // 匹配括号 ()
+  } else if (mode === 1) {
+      regex = /<([^>]+)>/g  // 匹配尖括号 <>
+  } else {
+      throw new Error("Invalid mode. Use 0 for parentheses and 1 for angle brackets.")
+  }
+
+  let match
+  while (match = regex.exec(str)) {
+      results.push(front[mode] + match[1] + back[mode])
+  }
+  return results
+}
+
+const missingIregular = german.split('>').length - 1 - extractContent(german, 1).length
+missingIregular && console.log(missingIregular)
+processWords(german.replace(/\[.*?\]/g, '').replace(/ \[.*?\]/g, ''), english)
