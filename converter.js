@@ -38,8 +38,7 @@ async function matchContent (german, english) {
 }
 
 function formatLine (line) {
-  const [word, example_sentence, meaning, translation] =
-    line
+  const [word, example_sentence, meaning, translation] = line
 
   return `${word}|${meaning}|${example_sentence}|${translation}||`
 }
@@ -48,7 +47,13 @@ async function processWords (german, english) {
   try {
     const responses = await matchContent(german, english)
     let content = '#html:false\n#separator:|\n'
-    content = content + responses + '\n' + extractContent(german, 1).join('\n') + '\n' + extractContent(english, 0).join('\n')
+    content =
+      content +
+      responses +
+      '\n' +
+      extractContent(german, 1).join('\n') +
+      '\n' +
+      extractContent(english, 0).join('\n')
 
     const filePath = path.join(dirToSave, 'words.txt')
     fs.writeFileSync(filePath, content)
@@ -58,27 +63,29 @@ async function processWords (german, english) {
   }
 }
 
-function extractContent(str, mode) {
+function extractContent (str, mode) {
   const results = []
-  const front = ['(', '<']
-  const back = [')', '>']
   let regex
 
   if (mode === 0) {
-      regex = /\(([^)]+)\)/g  // 匹配括号 ()
+    regex = /\(([^)]+)\)/g // 匹配括号 ()
   } else if (mode === 1) {
-      regex = /<([^>]+)>/g  // 匹配尖括号 <>
+    regex = /<([^>]+)>| c([^>]+)>/g // 匹配尖括号 <>
   } else {
-      throw new Error("Invalid mode. Use 0 for parentheses and 1 for angle brackets.")
+    throw new Error(
+      'Invalid mode. Use 0 for parentheses and 1 for angle brackets.'
+    )
   }
 
   let match
-  while (match = regex.exec(str)) {
-      results.push(front[mode] + match[1] + back[mode])
+  while ((match = regex.exec(str))) {
+    if (match[0][0] == ' ') {
+      results.push('<' + match[0].slice(2))
+    } else {
+      results.push(match[0])
+    }
   }
   return results
 }
 
-const missingIregular = german.split('>').length - 1 - extractContent(german, 1).length
-missingIregular && console.log(missingIregular)
 processWords(german.replace(/\[.*?\]/g, '').replace(/ \[.*?\]/g, ''), english)
