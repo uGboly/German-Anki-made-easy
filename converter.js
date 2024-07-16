@@ -23,7 +23,7 @@ async function generateResponse (prompt, separator) {
       response = JSON.parse(response)
       return response
     } catch (error) {
-      console.log(err)
+      console.log(error)
     }
   }
 }
@@ -41,13 +41,13 @@ function formatLine (line) {
   const [word, example_sentence, meaning, translation] =
     line
 
-  return `${word};${meaning};${example_sentence};${translation};;`
+  return `${word}|${meaning}|${example_sentence}|${translation}||`
 }
 
 async function processWords (german, english) {
   try {
     const responses = await matchContent(german, english)
-    let content = '#html:false\n#separator:;\n'
+    let content = '#html:false\n#separator:|\n'
     content += responses
 
     const filePath = path.join(dirToSave, 'words.txt')
