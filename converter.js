@@ -1,6 +1,6 @@
 const { OpenAIClient, AzureKeyCredential } = require('@azure/openai')
 const { azureApiKey, endpoint, deploymentID, dirToSave } = require('./config')
-const { converter } = require('./prompt')
+const { converter, irregularMatcher } = require('./prompt')
 const { german, english } = require('./bookFragment')
 const fs = require('fs')
 const path = require('path')
@@ -29,31 +29,35 @@ async function generateResponse (prompt, separator) {
 }
 
 async function matchContent (german, english) {
-  const response = await generateResponse(converter(german, english), [
-    '[',
-    ']'
-  ])
+  let response = await generateResponse(converter(german, english), ['[', ']'])
+  const irregArr = extractContent(german, 1)
+
+  let map = await generateResponse(
+    irregularMatcher(
+      irregArr,
+      response.map(arr => arr[0])
+    ),
+    ['[', ']']
+  )
+
+  for (let i = 0; i < map.length; i++) {
+    response[map[i]][4] = irregArr[i]
+  }
 
   return response.map(formatLine).join('\n').replace(/,\|/g, '.|')
 }
 
 function formatLine (line) {
-  const [word, example_sentence, meaning, translation] = line
+  const [word, example_sentence, meaning, translation, irr = ''] = line
 
-  return `${word}|${meaning}|${example_sentence}|${translation}||`
+  return `${word}|${meaning}|${example_sentence}|${translation}|${irr}|`
 }
 
 async function processWords (german, english) {
   try {
     const responses = await matchContent(german, english)
     let content = '#html:false\n#separator:|\n'
-    content =
-      content +
-      responses +
-      '\n' +
-      extractContent(german, 1).join('\n') +
-      '\n' +
-      extractContent(english, 0).join('\n')
+    content = content + responses + '\n' + extractContent(english, 0).join('\n')
 
     const filePath = path.join(dirToSave, 'words.txt')
     fs.writeFileSync(filePath, content)
@@ -79,6 +83,7 @@ function extractContent (str, mode) {
 
   let match
   while ((match = regex.exec(str))) {
+    match[0] = match[0].replace(/-\n/g, '')
     if (match[0][0] == ' ') {
       results.push('<' + match[0].slice(2))
     } else {

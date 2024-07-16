@@ -77,11 +77,28 @@ The German part is as follows:
 ${german}
 The English part is as follows:
 ${english}
-
   `
 }
+
+function irregularMatcher (irr, words) {
+  return `I will give you two arrays. Each item in array A represents the irregular changes of an irregular German verb. Array B is a list of German words. Your task is to find the German word in array B that matches each item in array A. Output a JSON array of the same length as array A, where each item represents the index of the corresponding German word in array B.
+
+For example:
+Input
+Array A: ["<zog, gezogen>", "<hob, gehoben>"]
+Array B: ["gebrauchen","die Gebrauchsanweisung","anmachen","ausmachen","drücken","füllen","schütteln","anzünden","kaputtmachen","ziehen","heben"]
+Output: [9, 10]
+
+Now, generate the JSON array for the following Array A and Array B: 
+Array A: ${irr}
+Array B: ${words}
+No extra output.
+`
+}
+
 module.exports = {
   meaningLookUp,
   irregularLookUp,
-  converter
+  converter,
+  irregularMatcher
 }
