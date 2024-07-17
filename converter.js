@@ -8,40 +8,47 @@ const path = require('path')
 const client = new OpenAIClient(endpoint, new AzureKeyCredential(azureApiKey))
 
 async function generateResponse (prompt, separator) {
-  let flag = true
-  while (flag) {
-    try {
-      const { choices } = await client.getChatCompletions(deploymentID, [
-        { role: 'user', content: prompt }
-      ])
+  try {
+    const { choices } = await client.getChatCompletions(deploymentID, [
+      { role: 'user', content: prompt }
+    ])
 
-      let response = choices[0].message.content
-      const firstIndex = response.indexOf(separator[0])
-      const lastIndex = response.lastIndexOf(separator[1])
-      response = response.substring(firstIndex, lastIndex + 1)
+    let response = choices[0].message.content
+    const firstIndex = response.indexOf(separator[0])
+    const lastIndex = response.lastIndexOf(separator[1])
+    response = response.substring(firstIndex, lastIndex + 1)
 
-      response = JSON.parse(response)
-      return response
-    } catch (error) {
-      console.log(error)
-    }
+    response = JSON.parse(response)
+    return response
+  } catch (error) {
+    throw error
   }
 }
 
 async function matchContent (german, english) {
-  let response = await generateResponse(converter(german, english), ['[', ']'])
+  let response
+  try {
+    response = await generateResponse(converter(german, english), ['[', ']'])
+  } catch (error) {
+    throw error
+  }
+
   const irregArr = extractContent(german, 1)
 
-  let map = await generateResponse(
-    irregularMatcher(
-      irregArr,
-      response.map(arr => arr[0])
-    ),
-    ['[', ']']
-  )
+  if (Array.isArray(irregArr) && irregArr.length > 0) {
+    let map = await generateResponse(
+      irregularMatcher(
+        irregArr,
+        response.map(arr => arr[0])
+      ),
+      ['[', ']']
+    )
 
-  for (let i = 0; i < map.length; i++) {
-    response[map[i]][4] = irregArr[i]
+    for (let i = 0; i < map.length; i++) {
+      if (response[map[i]]) {
+        response[map[i]][4] = irregArr[i]
+      }
+    }
   }
 
   return response.map(formatLine).join('\n').replace(/,\|/g, '.|')
