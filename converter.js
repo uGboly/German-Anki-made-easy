@@ -51,7 +51,7 @@ async function matchContent (german, english) {
     }
   }
 
-  return response.map(formatLine).join('\n').replace(/,\|/g, '.|')
+  return response.map(formatLine).join('\n').replace(/,\|/g, '.|').replace(/daß /g, 'dass ').replace(/muß /g, 'muss ')
 }
 
 function formatLine (line) {
