@@ -51,7 +51,24 @@ async function matchContent (german, english) {
     }
   }
 
-  return response.map(formatLine).join('\n').replace(/,\|/g, '.|').replace(/daß /g, 'dass ').replace(/muß /g, 'muss ')
+  return response
+    .map(formatLine)
+    .join('\n')
+    .replace(/,\|/g, '.|')
+    .replace(/daß |muß |muß,|muß\./g, match => {
+      switch (match) {
+        case 'daß ':
+          return 'dass '
+        case 'muß ':
+          return 'muss '
+        case 'muß,':
+          return 'muss,'
+        case 'muß.':
+          return 'muss.'
+        default:
+          return match
+      }
+    })
 }
 
 function formatLine (line) {
