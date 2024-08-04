@@ -40,29 +40,19 @@ function categorizeWords (wordsArray, isPrefix = true) {
     category2words[category] = []
   })
 
-  if (isPrefix) {
-    wordsArray.forEach(word => {
-      let found = false
-      for (let category of categories) {
-        if (word[0].startsWith(category)) {
-          category2words[category].push(word)
-          found = true
-          break
-        }
+  wordsArray.forEach(word => {
+    let found = false
+    for (let category of categories) {
+      if (
+        (isPrefix && word[0].startsWith(category)) ||
+        (!isPrefix && word[0].endsWith(category))
+      ) {
+        category2words[category].push(word)
+        found = true
+        break
       }
-    })
-  } else {
-    wordsArray.forEach(word => {
-      let found = false
-      for (let category of categories) {
-        if (word[0].endsWith(category)) {
-          category2words[category].push(word)
-          found = true
-          break
-        }
-      }
-    })
-  }
+    }
+  })
 
   return category2words
 }
