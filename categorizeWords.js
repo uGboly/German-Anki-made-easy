@@ -74,9 +74,12 @@ function categorizeWords (wordsArray, isPrefix = true) {
 }
 
 function printCategorizedWords (category2words) {
+  const sortedWordsList = Array.from(Object.entries(category2words))
+  sortedWordsList.sort((a, b) => b[1].length - a[1].length)
+
   let output = ''
 
-  for (const [category, words] of Object.entries(category2words)) {
+  for (const [category, words] of sortedWordsList) {
     if (words.length > 0) {
       output += category + '\n'
       words.forEach(word => {
@@ -87,4 +90,5 @@ function printCategorizedWords (category2words) {
   }
 
   fs.writeFileSync(outputPath, output)
+  console.log('Results written to', outputPath, 'successfully.')
 }
