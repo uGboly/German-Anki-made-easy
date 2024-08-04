@@ -1,3 +1,4 @@
+const ExcelJS = require('exceljs')
 const fs = require('fs')
 const path = require('path')
 const { germanPrefixes, germanVerbs } = require('./categories')
@@ -5,7 +6,10 @@ const { dirToSave } = require('./config')
 
 const isPrefix = +process.argv[2]
 const inputPath = path.join(dirToSave, 'deck.txt')
-const outputPath = path.join(dirToSave, isPrefix ? 'prefixes.txt' : 'stem.txt')
+const outputPath = path.join(
+  dirToSave,
+  isPrefix ? 'prefixes.xlsx' : 'stem.xlsx'
+)
 
 fs.readFile(inputPath, 'utf8', (err, data) => {
   if (err) {
@@ -41,12 +45,7 @@ function categorizeWords (wordsArray, isPrefix = true) {
       let found = false
       for (let category of categories) {
         if (word[0].startsWith(category)) {
-          category2words[category].push(
-            word
-              .join('|')
-              .replace(/<[^>]*>/g, '')
-              .replace(/"/g, '')
-          )
+          category2words[category].push(word)
           found = true
           break
         }
@@ -57,12 +56,7 @@ function categorizeWords (wordsArray, isPrefix = true) {
       let found = false
       for (let category of categories) {
         if (word[0].endsWith(category)) {
-          category2words[category].push(
-            word
-              .join('|')
-              .replace(/<[^>]*>/g, '')
-              .replace(/"/g, '')
-          )
+          category2words[category].push(word)
           found = true
           break
         }
@@ -77,18 +71,38 @@ function printCategorizedWords (category2words) {
   const sortedWordsList = Array.from(Object.entries(category2words))
   sortedWordsList.sort((a, b) => b[1].length - a[1].length)
 
-  let output = ''
+  const workbook = new ExcelJS.Workbook()
+  const worksheet = workbook.addWorksheet('Categorized Words')
+  worksheet.getColumn(1).width = 40
+  worksheet.getColumn(2).width = 70
+  const defaultFont = { size: 14 }
 
   for (const [category, words] of sortedWordsList) {
     if (words.length > 0) {
-      output += category + '\n'
+      const categoryRow = worksheet.addRow([category])
+      categoryRow.font = { ...defaultFont, bold: true }
       words.forEach(word => {
-        output += word + '\n'
+        const row = worksheet.addRow([
+          word[0],
+          word[1].replace(/<[^>]*>/g, '').replace(/"/g, '')
+        ])
+        row.eachCell(cell => {
+          cell.font = defaultFont
+        })
       })
-      output += '\n'
+      const emptyRow = worksheet.addRow([])
+      emptyRow.eachCell(cell => {
+        cell.font = defaultFont
+      })
     }
   }
 
-  fs.writeFileSync(outputPath, output)
-  console.log('Results written to', outputPath, 'successfully.')
+  workbook.xlsx
+    .writeFile(outputPath)
+    .then(() => {
+      console.log('Results written to', outputPath, 'successfully.')
+    })
+    .catch(error => {
+      console.error('Error writing to Excel file:', error)
+    })
 }
