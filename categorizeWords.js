@@ -1,7 +1,7 @@
 const ExcelJS = require('exceljs')
 const fs = require('fs')
 const path = require('path')
-const { germanPrefixes, germanVerbs, enPrepositions } = require('./categories')
+const { germanPrefixes, germanVerbs, enBlackList } = require('./categories')
 const { dirToSave } = require('./config')
 
 const inputPath = path.join(dirToSave, 'deck.txt')
@@ -65,7 +65,7 @@ function categorizeWordsByMeaning (wordsArray, category2words) {
     .filter(enWord => enWord.length > 1 && !containsPunctuation(enWord))
 
   const meaningSet = new Set(meanings)
-  enPrepositions.forEach(prep => meaningSet.delete(prep))
+  enBlackList.forEach(prep => meaningSet.delete(prep))
 
   const categories = Array.from(meaningSet.keys())
   categories.forEach(category => {

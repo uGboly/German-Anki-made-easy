@@ -147,16 +147,61 @@ const germanPrefixes = [
   'miss'
 ]
 
-const enPrepositions = [
-  "about", "above", "across", "after", "against", "along", "among", "around", "at",
-  "before", "behind", "below", "beneath", "beside", "between", "beyond", "by",
-  "down", "during", "except", "for", "from", "in", "inside", "into", "near",
-  "of", "off", "on", "out", "outside", "over", "through", "to", "toward", "under",
-  "until", "up", "upon", "with", "within", "without"
-];
+const enBlackList = [
+  'about',
+  'above',
+  'across',
+  'after',
+  'against',
+  'along',
+  'among',
+  'around',
+  'at',
+  'before',
+  'behind',
+  'below',
+  'beneath',
+  'beside',
+  'between',
+  'beyond',
+  'by',
+  'down',
+  'during',
+  'except',
+  'for',
+  'from',
+  'in',
+  'inside',
+  'into',
+  'near',
+  'of',
+  'off',
+  'on',
+  'out',
+  'outside',
+  'over',
+  'through',
+  'to',
+  'toward',
+  'under',
+  'until',
+  'up',
+  'upon',
+  'with',
+  'within',
+  'without',
+  'be',
+  'the',
+  'an',
+  'and',
+  'or',
+  'no',
+  'you',
+  'as'
+]
 
 module.exports = {
   germanPrefixes,
   germanVerbs,
-  enPrepositions
+  enBlackList
 }
