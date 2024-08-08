@@ -99,7 +99,7 @@ function printCategorizedWords (category2words, mode) {
 
   const workbook = new ExcelJS.Workbook()
   const worksheet = workbook.addWorksheet('Categorized Words')
-  worksheet.getColumn(1).width = 40
+  worksheet.getColumn(1).width = 45
   worksheet.getColumn(2).width = 70
   const defaultFont = { size: 14 }
 
