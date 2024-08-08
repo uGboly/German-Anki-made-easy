@@ -147,7 +147,16 @@ const germanPrefixes = [
   'miss'
 ]
 
+const enPrepositions = [
+  "about", "above", "across", "after", "against", "along", "among", "around", "at",
+  "before", "behind", "below", "beneath", "beside", "between", "beyond", "by",
+  "down", "during", "except", "for", "from", "in", "inside", "into", "near",
+  "of", "off", "on", "out", "outside", "over", "through", "to", "toward", "under",
+  "until", "up", "upon", "with", "within", "without"
+];
+
 module.exports = {
   germanPrefixes,
-  germanVerbs
+  germanVerbs,
+  enPrepositions
 }

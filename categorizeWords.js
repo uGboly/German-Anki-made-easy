@@ -1,15 +1,10 @@
 const ExcelJS = require('exceljs')
 const fs = require('fs')
 const path = require('path')
-const { germanPrefixes, germanVerbs } = require('./categories')
+const { germanPrefixes, germanVerbs, enPrepositions } = require('./categories')
 const { dirToSave } = require('./config')
 
-const isPrefix = +process.argv[2]
 const inputPath = path.join(dirToSave, 'deck.txt')
-const outputPath = path.join(
-  dirToSave,
-  isPrefix ? 'prefixes.xlsx' : 'stem.xlsx'
-)
 
 fs.readFile(inputPath, 'utf8', (err, data) => {
   if (err) {
@@ -17,24 +12,28 @@ fs.readFile(inputPath, 'utf8', (err, data) => {
     return
   }
 
-  const article = ['das ', 'der ', 'die ']
-  let wordsArray = data
-    .split('\n')
-    .map(line => line.split('\t').slice(0, 2))
-    .filter(
-      word =>
-        !article.reduce((prev, curr) => {
-          prev || word[0].startsWith(curr)
-        }, false)
-    )
-
-  const category2words = categorizeWords(wordsArray, isPrefix)
-  printCategorizedWords(category2words)
+  let wordsArray = data.split('\n').map(line => line.split('\t').slice(0, 2))
+  
+  for (let mode of [0, 1, 2]) {
+    const category2words = categorizeWords(wordsArray, mode)
+    printCategorizedWords(category2words, mode)
+  }
 })
 
-function categorizeWords (wordsArray, isPrefix = true) {
-  const categories = isPrefix ? germanPrefixes : germanVerbs
+function categorizeWords (wordsArray, mode) {
   const category2words = {}
+
+  if (mode != 2) {
+    categorizeWordsByForm(wordsArray, category2words, mode)
+  } else {
+    categorizeWordsByMeaning(wordsArray, category2words)
+  }
+
+  return category2words
+}
+
+function categorizeWordsByForm (wordsArray, category2words, mode) {
+  const categories = mode ? germanPrefixes : germanVerbs
 
   categories.forEach(category => {
     category2words[category] = []
@@ -44,8 +43,8 @@ function categorizeWords (wordsArray, isPrefix = true) {
     let found = false
     for (let category of categories) {
       if (
-        (isPrefix && word[0].startsWith(category)) ||
-        (!isPrefix && word[0].endsWith(category))
+        (mode && word[0].startsWith(category)) ||
+        (!mode && word[0].endsWith(category))
       ) {
         category2words[category].push(word)
         found = true
@@ -53,13 +52,50 @@ function categorizeWords (wordsArray, isPrefix = true) {
       }
     }
   })
-
-  return category2words
 }
 
-function printCategorizedWords (category2words) {
-  const sortedWordsList = Array.from(Object.entries(category2words))
-  sortedWordsList.sort((a, b) => b[1].length - a[1].length)
+function categorizeWordsByMeaning (wordsArray, category2words) {
+  wordsArray = wordsArray.filter(
+    word => word[1] && word[1].split(' ').length <= 5
+  )
+
+  const meanings = wordsArray
+    .map(word => word[1].split(' '))
+    .flat()
+    .filter(enWord => enWord.length > 1 && !containsPunctuation(enWord))
+
+  const meaningSet = new Set(meanings)
+  enPrepositions.forEach(prep => meaningSet.delete(prep))
+
+  const categories = Array.from(meaningSet.keys())
+  categories.forEach(category => {
+    category2words[category] = []
+  })
+
+  wordsArray.forEach(word => {
+    for (let enWord of word[1].split(' ')) {
+      if (meaningSet.has(enWord)) {
+        category2words[enWord].push(word)
+      }
+    }
+  })
+}
+
+function containsPunctuation (str) {
+  const punctuationRegex = /[!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]/
+  return punctuationRegex.test(str)
+}
+
+function printCategorizedWords (category2words, mode) {
+  const outputPath = path.join(
+    dirToSave,
+    (mode === 0 ? 'stem' : mode === 1 ? 'prefixes' : 'synonyms') + '.xlsx'
+  )
+
+  const sortedCategoriesList = Array.from(
+    Object.entries(category2words)
+  ).filter(category => category[1].length > 1)
+  sortedCategoriesList.sort((a, b) => b[1].length - a[1].length)
 
   const workbook = new ExcelJS.Workbook()
   const worksheet = workbook.addWorksheet('Categorized Words')
@@ -67,7 +103,7 @@ function printCategorizedWords (category2words) {
   worksheet.getColumn(2).width = 70
   const defaultFont = { size: 14 }
 
-  for (const [category, words] of sortedWordsList) {
+  for (const [category, words] of sortedCategoriesList) {
     if (words.length > 0) {
       const categoryRow = worksheet.addRow([category])
       categoryRow.font = { ...defaultFont, bold: true }
