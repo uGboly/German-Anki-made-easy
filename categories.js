@@ -112,6 +112,7 @@ const germanPrefixes = [
   'auf',
   'aus',
   'bei',
+  'be',
   'dar',
   'durch',
   'ein',
