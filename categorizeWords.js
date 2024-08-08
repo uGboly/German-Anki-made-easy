@@ -13,7 +13,7 @@ fs.readFile(inputPath, 'utf8', (err, data) => {
   }
 
   let wordsArray = data.split('\n').map(line => line.split('\t').slice(0, 2))
-  
+
   for (let mode of [0, 1, 2]) {
     const category2words = categorizeWords(wordsArray, mode)
     printCategorizedWords(category2words, mode)
@@ -102,6 +102,11 @@ function printCategorizedWords (category2words, mode) {
   worksheet.getColumn(1).width = 45
   worksheet.getColumn(2).width = 70
   const defaultFont = { size: 14 }
+  const emptyRowFill = {
+    type: 'pattern',
+    pattern: 'solid',
+    fgColor: { argb: 'FF808080' }
+  }
 
   for (const [category, words] of sortedCategoriesList) {
     if (words.length > 0) {
@@ -116,9 +121,10 @@ function printCategorizedWords (category2words, mode) {
           cell.font = defaultFont
         })
       })
-      const emptyRow = worksheet.addRow([])
+      const emptyRow = worksheet.addRow(['',''])
       emptyRow.eachCell(cell => {
         cell.font = defaultFont
+        cell.fill = emptyRowFill
       })
     }
   }
