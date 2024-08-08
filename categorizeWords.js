@@ -8,7 +8,7 @@ const inputPath = path.join(dirToSave, 'deck.txt')
 
 fs.readFile(inputPath, 'utf8', (err, data) => {
   if (err) {
-    console.error('无法读取文件:', err)
+    console.error('Unable to read file:', err)
     return
   }
 
@@ -42,10 +42,14 @@ function categorizeWordsByForm (wordsArray, category2words, mode) {
   wordsArray.forEach(word => {
     let found = false
     for (let category of categories) {
-      if (
-        (mode && word[0].startsWith(category)) ||
-        (!mode && word[0].endsWith(category))
-      ) {
+      const startsWithCategory = mode && word[0].startsWith(category)
+      const endsWithCategory =
+        !mode &&
+        word[0]
+          .split(' ')
+          .reduce((prev, curr) => prev || curr.endsWith(category), false)
+
+      if (startsWithCategory || endsWithCategory) {
         category2words[category].push(word)
         found = true
         break
@@ -74,7 +78,7 @@ function categorizeWordsByMeaning (wordsArray, category2words) {
 
   wordsArray.forEach(word => {
     for (let enWord of word[1].split(' ')) {
-      if (meaningSet.has(enWord)) {
+      if (meaningSet.has(enWord) && !category2words[enWord].includes(word)) {
         category2words[enWord].push(word)
       }
     }
@@ -121,7 +125,7 @@ function printCategorizedWords (category2words, mode) {
           cell.font = defaultFont
         })
       })
-      const emptyRow = worksheet.addRow(['',''])
+      const emptyRow = worksheet.addRow(['', ''])
       emptyRow.eachCell(cell => {
         cell.font = defaultFont
         cell.fill = emptyRowFill

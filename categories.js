@@ -103,7 +103,11 @@ const germanVerbs = [
   'glücklich',
   'traurig',
   'zufrieden',
-  'wütend'
+  'wütend',
+  'heben',
+  'holen',
+  'rühren',
+  'richten'
 ]
 
 const germanPrefixes = [
@@ -198,7 +202,11 @@ const enBlackList = [
   'or',
   'no',
   'you',
-  'as'
+  'as',
+  'go',
+  'have',
+  'get',
+  'take'
 ]
 
 module.exports = {
