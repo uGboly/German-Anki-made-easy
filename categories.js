@@ -108,7 +108,9 @@ const germanVerbs = [
   'holen',
   'rühren',
   'richten',
-  'führen'
+  'führen',
+  'greifen',
+  'setzen'
 ]
 
 const germanPrefixes = [
