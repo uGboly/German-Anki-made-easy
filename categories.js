@@ -50,10 +50,7 @@ const germanVerbs = [
   'glauben',
   'fragen',
   'antworten',
-  'vergessen',
-  'verstehen',
   'kaufen',
-  'verkaufen',
   'zahlen',
   'schaffen',
   'kochen',
@@ -110,7 +107,8 @@ const germanVerbs = [
   'richten',
   'führen',
   'greifen',
-  'setzen'
+  'setzen',
+  'schützen'
 ]
 
 const germanPrefixes = [
