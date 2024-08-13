@@ -108,7 +108,8 @@ const germanVerbs = [
   'führen',
   'greifen',
   'setzen',
-  'schützen'
+  'schützen',
+  'hindern'
 ]
 
 const germanPrefixes = [
