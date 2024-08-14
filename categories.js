@@ -109,7 +109,9 @@ const germanVerbs = [
   'greifen',
   'setzen',
   'schützen',
-  'hindern'
+  'hindern',
+  'stimmen',
+  'dienen'
 ]
 
 const germanPrefixes = [
@@ -208,7 +210,11 @@ const enBlackList = [
   'go',
   'have',
   'get',
-  'take'
+  'take',
+  'hundred',
+  'one',
+  'not',
+  'last'
 ]
 
 module.exports = {
