@@ -111,7 +111,9 @@ const germanVerbs = [
   'schützen',
   'hindern',
   'stimmen',
-  'dienen'
+  'dienen',
+  'herrschen',
+  'zeichnen'
 ]
 
 const germanPrefixes = [
