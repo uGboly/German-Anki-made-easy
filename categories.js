@@ -113,7 +113,8 @@ const germanVerbs = [
   'stimmen',
   'dienen',
   'herrschen',
-  'zeichnen'
+  'zeichnen',
+  'teilen'
 ]
 
 const germanPrefixes = [

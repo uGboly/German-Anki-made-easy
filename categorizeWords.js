@@ -40,7 +40,6 @@ function categorizeWordsByForm (wordsArray, category2words, mode) {
   })
 
   wordsArray.forEach(word => {
-    let found = false
     for (let category of categories) {
       const startsWithCategory = mode && word[0].startsWith(category)
       const endsWithCategory =
@@ -64,7 +63,7 @@ function categorizeWordsByMeaning (wordsArray, category2words) {
   )
 
   const meanings = wordsArray
-    .map(word => word[1].split(' '))
+    .map(word => word[1].split(/[,;]?\s+/))
     .flat()
     .filter(enWord => enWord.length > 1 && !containsPunctuation(enWord))
 
@@ -77,7 +76,7 @@ function categorizeWordsByMeaning (wordsArray, category2words) {
   })
 
   wordsArray.forEach(word => {
-    for (let enWord of word[1].split(' ')) {
+    for (let enWord of word[1].split(/[,;]?\s+/)) {
       if (meaningSet.has(enWord) && !category2words[enWord].includes(word)) {
         category2words[enWord].push(word)
       }
