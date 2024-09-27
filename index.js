@@ -1,35 +1,13 @@
-const { OpenAIClient, AzureKeyCredential } = require('@azure/openai')
-const { azureApiKey, endpoint, deploymentID, dirToSave } = require('./config')
-const { meaningLookUp, irregularLookUp } = require('./prompt')
+const { meaningLookUp, irregularLookUp } = require('./utils/prompt')
+const { generateResponse } = require('./utils/proxy')
+const { dirToSave } = require('./config')
 const fs = require('fs')
 const path = require('path')
 
-const client = new OpenAIClient(endpoint, new AzureKeyCredential(azureApiKey))
-
-async function generateResponse (word, prompt, separator) {
-  let flag = true
-  while (flag) {
-    try {
-      const { choices } = await client.getChatCompletions(deploymentID, [
-        { role: 'user', content: prompt(word) }
-      ])
-
-      let response = choices[0].message.content
-      const firstIndex = response.indexOf(separator[0])
-      const lastIndex = response.lastIndexOf(separator[1])
-      response = response.substring(firstIndex, lastIndex + 1)
-
-      response = JSON.parse(response)
-      return response
-    } catch (error) {
-      continue
-    }
-  }
-}
 
 async function lookUp (word) {
-  const dict = await generateResponse(word, meaningLookUp, ['{', '}'])
-  const irregular = await generateResponse(word, irregularLookUp, ['[', ']'])
+  const dict = await generateResponse( meaningLookUp(word), ['{', '}'])
+  const irregular = await generateResponse( irregularLookUp(word), ['[', ']'])
 
   return formatResponse(dict, irregular)
 }
