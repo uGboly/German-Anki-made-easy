@@ -1,7 +1,7 @@
 const ExcelJS = require('exceljs')
 const fs = require('fs')
 const path = require('path')
-const { germanPrefixes, germanVerbs, enBlackList } = require('./categories')
+const { germanPrefixes, germanVerbs, enBlackList } = require('./utils/categories')
 const { dirToSave } = require('./config')
 
 const inputPath = path.join(dirToSave, 'deck.txt')
