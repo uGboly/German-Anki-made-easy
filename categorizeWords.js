@@ -92,7 +92,7 @@ function containsPunctuation (str) {
 function printCategorizedWords (category2words, mode) {
   const outputPath = path.join(
     dirToSave,
-    (mode === 0 ? 'stem' : mode === 1 ? 'prefixes' : 'synonyms') + '.xlsx'
+    (mode === 0 ? 'stems' : mode === 1 ? 'prefixes' : 'synonyms') + '.xlsx'
   )
 
   const sortedCategoriesList = Array.from(
