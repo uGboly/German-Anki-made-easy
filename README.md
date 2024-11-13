@@ -2,7 +2,7 @@
 
 **German Anki Made Easy** is a tool designed to help learners efficiently create and organize Anki flashcards for German vocabulary. It offers two main features:
 
-1. **Automated Anki Card Creation**: Uses the Azure OpenAI API to generate Anki cards for German words.
+1. **Automated Anki Card Creation**: Uses the OpenAI API to generate Anki cards for German words.
 2. **Vocabulary Categorization**: Organizes words from your Anki deck by prefixes, stems, and synonyms, providing clear and structured summaries.
 
 ## Getting Started
@@ -15,20 +15,18 @@ Begin by installing the required dependencies:
 npm install
 ```
 
-### 2. Configure the Azure API
+### 2. Configure the API
 
-Create a `config.js` file in the project directory to configure the Azure API settings. Use the following template:
+Create a `config.js` file in the project directory to configure the API settings. Use the following template:
 
 ```javascript
 module.exports = {
-    azureApiKey: 'xxx', 
-    endpoint: 'xxxx', 
-    deploymentID: 'xxx', 
+    apiKey: 'xxx', 
     dirToSave: 'xxx' 
 }
 ```
 
-- Replace `'xxx'` with your Azure API key, endpoint, and deployment ID.
+- Replace `'xxx'` with your API key.
 - Set `dirToSave` to the directory where output files will be saved.
 
 ### 3. Set Up Anki Note and Card Types
