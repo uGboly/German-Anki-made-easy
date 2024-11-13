@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/uGboly/anki-made-easy#readme",
   "dependencies": {
-    "@azure/openai": "^1.0.0-beta.12",
-    "exceljs": "^4.4.0"
+    "exceljs": "^4.4.0",
+    "openai": "^4.72.0"
   }
 }

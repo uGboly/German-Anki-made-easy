@@ -1,13 +1,14 @@
-const { OpenAIClient, AzureKeyCredential } = require('@azure/openai')
-const { azureApiKey, endpoint, deploymentID } = require('../config')
+const OpenAI = require('openai')
+const { apiKey } = require('../config')
 
-const client = new OpenAIClient(endpoint, new AzureKeyCredential(azureApiKey))
+const client = new OpenAI({ apiKey })
 
 async function generateResponse (prompt, separator) {
   try {
-    const { choices } = await client.getChatCompletions(deploymentID, [
-      { role: 'user', content: prompt }
-    ])
+    const { choices } = await client.chat.completions.create({
+      messages: [{ role: 'user', content: prompt }],
+      model: 'gpt-4o'
+    })
 
     let response = choices[0].message.content
     const firstIndex = response.indexOf(separator[0])
