@@ -114,7 +114,10 @@ const germanVerbs = [
   'dienen',
   'herrschen',
   'zeichnen',
-  'teilen'
+  'teilen',
+  'scheiden',
+  'handeln',
+  'schmutz'
 ]
 
 const germanPrefixes = [
